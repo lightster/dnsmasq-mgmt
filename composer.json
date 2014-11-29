@@ -1,0 +1,21 @@
+{
+    "name": "lightster/dnsmasq-mgmt",
+    "description": "Tool for managing `address` entries in dnsmasq",
+    "keywords": [
+        "dnsmasq",
+        "management"
+    ],
+    "homepage": "https://github.com/lightster/dnsmasq-mgmt",
+    "autoload": {
+        "psr-0": {
+            "Lstr\\": "src"
+        }
+    },
+    "require": {
+        "php": ">=5.4",
+        "silex/silex": "~1.1",
+        "lightster/lstr-silex": "~0.2.1",
+        "symfony/console": "~2.4.2",
+        "symfony/process": "~2.5.0"
+    }
+}
