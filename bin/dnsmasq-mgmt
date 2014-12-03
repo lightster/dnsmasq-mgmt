@@ -7,6 +7,7 @@
 $app = require_once __DIR__ . '/../bootstrap.php';
 
 use Lstr\DnsmasqMgmt\Command\ClearCacheCommand;
+use Lstr\DnsmasqMgmt\Command\ShowCommand;
 
 use Lstr\Silex\App\AppAwareInterface;
 use Silex\Application;
@@ -17,6 +18,7 @@ $console = new ConsoleApp(
 );
 
 $console->add(new ClearCacheCommand());
+$console->add(new ShowCommand());
 
 foreach ($console->all() as $command) {
     if ($command instanceof AppAwareInterface) {
