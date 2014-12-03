@@ -1,0 +1,29 @@
+#!/usr/bin/env php
+<?php
+/*
+ * dnsmasq management tools
+ */
+
+$app = require_once __DIR__ . '/../bootstrap.php';
+
+use Lstr\DnsmasqMgmt\Command\ClearCacheCommand;
+
+use Lstr\Silex\App\AppAwareInterface;
+use Silex\Application;
+use Symfony\Component\Console\Application as ConsoleApp;
+
+$console = new ConsoleApp(
+    'dnsmasq management tools'
+);
+
+$console->add(new ClearCacheCommand());
+
+foreach ($console->all() as $command) {
+    if ($command instanceof AppAwareInterface) {
+        $command->setSilexApplication($app);
+    }
+}
+
+$exit_code = $console->run();
+
+exit($exit_code);

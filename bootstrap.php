@@ -7,6 +7,8 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+use Lstr\DnsmasqMgmt\Service\DnsmasqMgmtServiceProvider;
+
 use Lstr\Silex\Config\ConfigServiceProvider;
 use Silex\Application;
 
@@ -17,6 +19,7 @@ $app['route_class'] = 'Ied\Iaxs\Application\Route';
 $app->register(new ConfigServiceProvider());
 
 // dnsmasq-management components
+$app->register(new DnsmasqMgmtServiceProvider());
 
 $app['config'] = $app['lstr.config']->load(array(
     __DIR__ . '/config/autoload/*.global.php',
