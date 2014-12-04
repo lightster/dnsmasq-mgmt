@@ -43,6 +43,35 @@ class ConfigService
             throw new Exception("The contents of '{$this->config_file}' is not valid JSON.");
         }
 
+        $this->config['active_workspace'] = 'default';
+
         return $this->config;
+    }
+
+    public function getActiveWorkspace()
+    {
+        return $this->config['active_workspace'];
+    }
+
+    public function addAddress($hostname, $ip_address)
+    {
+        $this->getConfig();
+
+        $workspace = &$this->config['workspaces']['default'];
+
+        if (isset($workspace['domains'][$hostname])) {
+            throw new Exception("Address is '{$hostname}' already configured.");
+        }
+
+        $workspace['domains'][$hostname] = [
+            'ip_address' => $ip_address,
+        ];
+
+        $this->writeConfig();
+    }
+
+    private function writeConfig()
+    {
+        file_put_contents($this->config_file, json_encode($this->config));
     }
 }
