@@ -9,6 +9,7 @@ $app = require_once __DIR__ . '/../bootstrap.php';
 use Lstr\DnsmasqMgmt\Command\AddressAddCommand;
 use Lstr\DnsmasqMgmt\Command\ClearCacheCommand;
 use Lstr\DnsmasqMgmt\Command\ShowCommand;
+use Lstr\DnsmasqMgmt\Command\SudoersSetupCommand;
 
 use Lstr\Silex\App\AppAwareInterface;
 use Silex\Application;
@@ -21,6 +22,7 @@ $console = new ConsoleApp(
 $console->add(new AddressAddCommand());
 $console->add(new ClearCacheCommand());
 $console->add(new ShowCommand());
+$console->add(new SudoersSetupCommand());
 
 foreach ($console->all() as $command) {
     if ($command instanceof AppAwareInterface) {

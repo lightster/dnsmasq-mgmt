@@ -28,8 +28,8 @@ set -v
 
 {$version_command}
 
-sudo launchctl stop homebrew.mxcl.dnsmasq
-sudo launchctl start homebrew.mxcl.dnsmasq
+sudo /bin/launchctl stop homebrew.mxcl.dnsmasq
+sudo /bin/launchctl start homebrew.mxcl.dnsmasq
 SHELL;
 
         $process = new Process($shell);
@@ -67,7 +67,7 @@ SHELL;
 
         // darwin 14 = OS X 10.10
         $this->version_commands['14'] = <<<OSX_COMMAND
-sudo discoveryutil udnsflushcaches
+sudo /usr/sbin/discoveryutil udnsflushcaches
 OSX_COMMAND;
 
         // darwin 13 = OS X 10.9
