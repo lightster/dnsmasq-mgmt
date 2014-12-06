@@ -19,9 +19,7 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
 
     public function clearDnsCache()
     {
-        $all_commands = $this->getClearCacheCommands(
-            $this->environment['release']
-        );
+        $all_commands = $this->getClearCacheCommands();
         $sudo_commands = array_map(
             function ($command) {
                 if ($command) {
@@ -55,7 +53,7 @@ SHELL;
         return;
     }
 
-    private function getClearCacheCommands($darwin_version)
+    public function getClearCacheCommands()
     {
         $all_commands   = [];
         $all_commands[] = '/bin/launchctl stop homebrew.mxcl.dnsmasq';
@@ -63,7 +61,7 @@ SHELL;
         $all_commands[] = '';
         $all_commands   = array_merge(
             $all_commands,
-            $this->getVersionCommand($darwin_version)
+            $this->getVersionCommand($this->environment['release'])
         );
 
         return $all_commands;
