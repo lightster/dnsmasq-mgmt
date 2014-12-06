@@ -28,6 +28,11 @@ class SudoersSetupCommand extends Command implements AppAwareInterface
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (0 !== posix_geteuid()) {
+            $output->writeln("Please re-run '{$this->getName()}' with sudo.");
+            exit(1);
+        }
+
         $app     = $this->getSilexApplication();
         $service = $app['lstr.dnsmasq'];
 
