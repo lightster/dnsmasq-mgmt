@@ -34,7 +34,7 @@ class DnsmasqMgmtServiceProvider implements ServiceProviderInterface
             return new DnsmasqMgmtConductor([
                 'environment_service' => $env_service,
                 'config_service' => new ConfigService($app['config']['home_dir']),
-                'sudoers_service' => new SudoersService(),
+                'sudoers_service' => new SudoersService($env_service),
             ]);
         });
     }

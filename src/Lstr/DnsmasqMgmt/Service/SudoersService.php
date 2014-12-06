@@ -8,6 +8,13 @@ use Symfony\Component\Process\Process;
 
 class SudoersService
 {
+    private $env_service;
+
+    public function __construct(EnvironmentServiceInterface $env_service)
+    {
+        $this->env_service = $env_service;
+    }
+
     public function setupSudoers()
     {
         $sudoers = file_get_contents('/etc/sudoers');
@@ -21,13 +28,25 @@ class SudoersService
             $sudoers
         );
 
-        $sudoers .= <<<'TXT'
+        $all_commands = $this->env_service->getClearCacheCommands();
+        $prepared_commands = [];
+        foreach ($all_commands as $key => $command) {
+            if (!$command) {
+                continue;
+            }
+
+            $alias = "DNSMASQ_MGMT_{$key}";
+            $prepared_commands[$alias] = "Cmnd_Alias {$alias} = {$command}";
+        }
+
+        $command_string = implode("\n", $prepared_commands);
+        $alias_list = implode(', ', array_keys($prepared_commands));
+
+        $sudoers .= <<<TXT
 
 #BEGIN-DNSMASQ-MGMT
-Cmnd_Alias LCTL_DNSMASQ_STOP = /bin/launchctl stop homebrew.mxcl.dnsmasq
-Cmnd_Alias LCTL_DNSMASQ_START = /bin/launchctl start homebrew.mxcl.dnsmasq
-Cmnd_Alias DISCOVERYUTIL = /usr/sbin/discoveryutil udnsflushcaches
-%admin ALL=(root) NOPASSWD: LCTL_DNSMASQ_STOP, LCTL_DNSMASQ_START, DISCOVERYUTIL
+{$command_string}
+%admin ALL=(root) NOPASSWD: {$alias_list}
 #END-DNSMASQ-MGMT
 
 TXT;
