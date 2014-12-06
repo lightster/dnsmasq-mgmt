@@ -19,17 +19,26 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
 
     public function clearDnsCache()
     {
-        $version_command = $this->getVersionCommand($this->environment['release']);
+        $all_commands = $this->getClearCacheCommands(
+            $this->environment['release']
+        );
+        $sudo_commands = array_map(
+            function ($command) {
+                if ($command) {
+                    return "sudo {$command}";
+                }
+
+                return '';
+            },
+            $all_commands
+        );
+        $command_string = implode("\n", $sudo_commands);
 
         $shell = <<<SHELL
 set -e
 set -u
 set -v
-
-{$version_command}
-
-sudo /bin/launchctl stop homebrew.mxcl.dnsmasq
-sudo /bin/launchctl start homebrew.mxcl.dnsmasq
+{$command_string}
 SHELL;
 
         $process = new Process($shell);
@@ -44,6 +53,20 @@ SHELL;
         });
 
         return;
+    }
+
+    private function getClearCacheCommands($darwin_version)
+    {
+        $all_commands   = [];
+        $all_commands[] = '/bin/launchctl stop homebrew.mxcl.dnsmasq';
+        $all_commands[] = '/bin/launchctl start homebrew.mxcl.dnsmasq';
+        $all_commands[] = '';
+        $all_commands   = array_merge(
+            $all_commands,
+            $this->getVersionCommand($darwin_version)
+        );
+
+        return $all_commands;
     }
 
     private function getVersionCommand($darwin_version)
@@ -66,28 +89,28 @@ SHELL;
         }
 
         // darwin 14 = OS X 10.10
-        $this->version_commands['14'] = <<<OSX_COMMAND
-sudo /usr/sbin/discoveryutil udnsflushcaches
-OSX_COMMAND;
+        $this->version_commands['14'] = [
+            '/usr/sbin/discoveryutil udnsflushcaches',
+        ];
 
         // darwin 13 = OS X 10.9
-        $this->version_commands['13'] = <<<OSX_COMMAND
-sudo dscacheutil -flushcache
-sudo killall -HUP mDNSResponder
-OSX_COMMAND;
+        $this->version_commands['13'] = [
+            '/usr/bin/dscacheutil -flushcache',
+            '/usr/bin/killall -HUP mDNSResponder',
+        ];
 
         // darwin 12 = OS X 10.8
-        $this->version_commands['12'] = <<<OSX_COMMAND
-sudo killall -HUP mDNSResponder
-OSX_COMMAND;
+        $this->version_commands['12'] = [
+            '/usr/bin/killall -HUP mDNSResponder',
+        ];
 
         // darwin 11 = OS X 10.7
         $this->version_commands['11'] = $this->version_commands['12'];
 
         // darwin 10 = OS X 10.6
-        $this->version_commands['10'] = <<<OSX_COMMAND
-sudo dscacheutil -flushcache
-OSX_COMMAND;
+        $this->version_commands['10'] = [
+            '/usr/bin/dscacheutil -flushcache',
+        ];
 
         // darwin 9 = OS X 10.5
         $this->version_commands['9'] = $this->version_commands['10'];
