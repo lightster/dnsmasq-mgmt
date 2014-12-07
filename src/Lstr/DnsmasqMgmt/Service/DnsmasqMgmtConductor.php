@@ -37,6 +37,12 @@ class DnsmasqMgmtConductor
         $this->environment_service->clearDnsCache();
     }
 
+    public function updateAddress($hostname, $ip)
+    {
+        $this->config_service->updateAddress($hostname, $ip);
+        $this->environment_service->clearDnsCache();
+    }
+
     public function setupSudoers()
     {
         $this->sudoers_service->setupSudoers();

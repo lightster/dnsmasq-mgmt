@@ -85,6 +85,23 @@ class ConfigService
         $this->writeConfig();
     }
 
+    public function updateAddress($hostname, $ip)
+    {
+        $this->getConfig();
+
+        $workspace = &$this->config['workspaces']['default'];
+
+        if (!isset($workspace['domains'][$hostname])) {
+            throw new Exception("Address is '{$hostname}' not configured.");
+        }
+
+        if ($ip) {
+            $workspace['domains'][$hostname]['ip_address'] = $ip;
+        }
+
+        $this->writeConfig();
+    }
+
     private function writeConfig()
     {
         file_put_contents($this->config_file, json_encode($this->config));
