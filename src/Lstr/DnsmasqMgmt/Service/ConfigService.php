@@ -70,6 +70,21 @@ class ConfigService
         $this->writeConfig();
     }
 
+    public function removeAddress($hostname)
+    {
+        $this->getConfig();
+
+        $workspace = &$this->config['workspaces']['default'];
+
+        if (!isset($workspace['domains'][$hostname])) {
+            throw new Exception("Address is '{$hostname}' not configured.");
+        }
+
+        unset($workspace['domains'][$hostname]);
+
+        $this->writeConfig();
+    }
+
     private function writeConfig()
     {
         file_put_contents($this->config_file, json_encode($this->config));
