@@ -7,6 +7,7 @@
 $app = require_once __DIR__ . '/../bootstrap.php';
 
 use Lstr\DnsmasqMgmt\Command\AddressAddCommand;
+use Lstr\DnsmasqMgmt\Command\AddressListCommand;
 use Lstr\DnsmasqMgmt\Command\AddressRemoveCommand;
 use Lstr\DnsmasqMgmt\Command\AddressUpdateCommand;
 use Lstr\DnsmasqMgmt\Command\ClearCacheCommand;
@@ -22,6 +23,7 @@ $console = new ConsoleApp(
 );
 
 $console->add(new AddressAddCommand());
+$console->add(new AddressListCommand());
 $console->add(new AddressRemoveCommand());
 $console->add(new AddressUpdateCommand());
 $console->add(new ClearCacheCommand());

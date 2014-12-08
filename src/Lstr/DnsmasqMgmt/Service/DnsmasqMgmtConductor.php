@@ -43,6 +43,11 @@ class DnsmasqMgmtConductor
         $this->environment_service->clearDnsCache();
     }
 
+    public function getAddresses()
+    {
+        return $this->config_service->getAddresses();
+    }
+
     public function setupSudoers()
     {
         $this->sudoers_service->setupSudoers();

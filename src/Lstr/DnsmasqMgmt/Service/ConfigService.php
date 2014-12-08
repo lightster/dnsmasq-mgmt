@@ -102,6 +102,15 @@ class ConfigService
         $this->writeConfig();
     }
 
+    public function getAddresses()
+    {
+        $this->getConfig();
+
+        $workspace = &$this->config['workspaces']['default'];
+
+        return $workspace['domains'];
+    }
+
     private function writeConfig()
     {
         file_put_contents($this->config_file, json_encode($this->config));
