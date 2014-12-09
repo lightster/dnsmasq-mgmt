@@ -14,6 +14,7 @@ class ConfigService
     {
         $this->home_dir = $home_dir;
         $this->config_file = "{$this->home_dir}/config.json";
+        $this->dnsmasq_config_file = '/usr/local/etc/dnsmasq.d/100-dnsmasq-mgmt.conf';
     }
 
     public function getConfig()
@@ -64,6 +65,7 @@ class ConfigService
         }
 
         $workspace['domains'][$hostname] = [
+            'hostname' => $hostname,
             'ip_address' => $ip_address,
         ];
 
@@ -113,6 +115,17 @@ class ConfigService
 
     private function writeConfig()
     {
+        $workspace = &$this->config['workspaces']['default'];
+
         file_put_contents($this->config_file, json_encode($this->config));
+
+        $dnsmasq_addresses = array_map(
+            function ($domain) {
+                return "address=/{$domain['hostname']}/{$domain['ip_address']}";
+            },
+            $workspace['domains']
+        );
+        $address_lines = implode("\n", $dnsmasq_addresses);
+        file_put_contents($this->dnsmasq_config_file, $address_lines);
     }
 }
