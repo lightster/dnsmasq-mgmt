@@ -23,28 +23,14 @@ class ConfigService
             return $this->config;
         }
 
-        if (!file_exists($this->config_file)) {
-            return $this->config = array();
-        }
+        $this->readConfig();
 
-        $config_json = file_get_contents($this->config_file);
-        if (false === $config_json) {
-            throw new Exception("Could not read '{$this->config_file}'.");
-        }
-
-        // if the file is readable but contains nothing,
-        // do not try to parse it as JSON
-        if (empty($config_json)) {
-            return $this->config = array();
-        }
-
-        $this->config = json_decode($config_json, true);
-
-        if (null === $this->config) {
-            throw new Exception("The contents of '{$this->config_file}' is not valid JSON.");
-        }
-
-        $this->config['active_workspace'] = 'default';
+        $this->config = array_replace_recursive(
+            [
+                'active_workspace' => 'default',
+            ],
+            $this->config
+        );
 
         return $this->config;
     }
@@ -111,6 +97,32 @@ class ConfigService
         $workspace = &$this->config['workspaces']['default'];
 
         return $workspace['domains'];
+    }
+
+    private function readConfig()
+    {
+        if (!file_exists($this->config_file)) {
+            $this->config = array();
+            return;
+        }
+
+        $config_json = file_get_contents($this->config_file);
+        if (false === $config_json) {
+            throw new Exception("Could not read '{$this->config_file}'.");
+        }
+
+        // if the file is readable but contains nothing,
+        // do not try to parse it as JSON
+        if (empty($config_json)) {
+            $this->config = array();
+            return;
+        }
+
+        $this->config = json_decode($config_json, true);
+
+        if (null === $this->config) {
+            throw new Exception("The contents of '{$this->config_file}' is not valid JSON.");
+        }
     }
 
     private function writeConfig()
