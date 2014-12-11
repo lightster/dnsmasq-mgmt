@@ -9,6 +9,7 @@ class ConfigService
     private $home_dir;
     private $config_file;
     private $config;
+    private $saved_config;
 
     public function __construct($home_dir)
     {
@@ -31,6 +32,8 @@ class ConfigService
             ],
             $this->config
         );
+
+        $this->saved_config = $this->config;
 
         return $this->config;
     }
@@ -128,6 +131,26 @@ class ConfigService
     private function writeConfig()
     {
         $workspace = &$this->config['workspaces']['default'];
+        $saved_workspace = &$this->saved_config['workspaces']['default'];
+
+        foreach ($workspace['domains'] as $domain) {
+            $resolver_file = "/etc/resolver/{$domain['hostname']}";
+            if (!file_exists($resolver_file)
+                && !file_put_contents($resolver_file, "nameserver 127.0.0.1\n")
+            ) {
+                throw new Exception("Could not create resolver file: '{$resolver_file}'");
+            }
+        }
+        foreach ($saved_workspace['domains'] as $key => $domain) {
+            $resolver_file = "/etc/resolver/{$domain['hostname']}";
+            if (!array_key_exists($key, $workspace['domains'])
+                && file_exists($resolver_file)
+            ) {
+                if (unlink($resolver_file)) {
+                    throw new Exception("Could not remove resolver file: '{$resolver_file}'");
+                }
+            }
+        }
 
         file_put_contents($this->config_file, json_encode($this->config));
 
