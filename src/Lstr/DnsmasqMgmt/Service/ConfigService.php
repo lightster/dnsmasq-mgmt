@@ -10,12 +10,14 @@ class ConfigService
     private $config_file;
     private $config;
     private $saved_config;
+    private $resolver_dir;
 
     public function __construct($home_dir)
     {
         $this->home_dir = $home_dir;
         $this->config_file = "{$this->home_dir}/config.json";
         $this->dnsmasq_config_file = '/usr/local/etc/dnsmasq.d/100-dnsmasq-mgmt.conf';
+        $This->resolver_dir = '/etc/resolver';
     }
 
     public function getConfig()
@@ -134,7 +136,7 @@ class ConfigService
         $saved_workspace = &$this->saved_config['workspaces']['default'];
 
         foreach ($workspace['domains'] as $domain) {
-            $resolver_file = "/etc/resolver/{$domain['hostname']}";
+            $resolver_file = "{$this->resolver_dir}/{$domain['hostname']}";
             if (!file_exists($resolver_file)
                 && !file_put_contents($resolver_file, "nameserver 127.0.0.1\n")
             ) {
@@ -142,7 +144,7 @@ class ConfigService
             }
         }
         foreach ($saved_workspace['domains'] as $key => $domain) {
-            $resolver_file = "/etc/resolver/{$domain['hostname']}";
+            $resolver_file = "{$this->resolver_dir}/{$domain['hostname']}";
             if (!array_key_exists($key, $workspace['domains'])
                 && file_exists($resolver_file)
             ) {
