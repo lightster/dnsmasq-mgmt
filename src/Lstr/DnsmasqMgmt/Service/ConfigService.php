@@ -153,6 +153,7 @@ class ConfigService
         }
 
         file_put_contents($this->config_file, json_encode($this->config));
+        $this->saved_config = $this->config;
 
         $dnsmasq_addresses = array_map(
             function ($domain) {
