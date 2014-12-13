@@ -17,7 +17,7 @@ class ConfigService
         $this->home_dir = $home_dir;
         $this->config_file = "{$this->home_dir}/config.json";
         $this->dnsmasq_config_file = '/usr/local/etc/dnsmasq.d/100-dnsmasq-mgmt.conf';
-        $This->resolver_dir = '/etc/resolver';
+        $this->resolver_dir = '/etc/resolver';
     }
 
     public function getConfig()
