@@ -6,18 +6,17 @@ use Exception;
 
 class ConfigService
 {
-    private $home_dir;
     private $config_file;
     private $config;
     private $saved_config;
     private $resolver_dir;
 
-    public function __construct($home_dir)
+    public function __construct(array $paths)
     {
-        $this->home_dir = $home_dir;
+        $this->home_dir = $this->pickPath($paths, 'home_dir');
         $this->config_file = "{$this->home_dir}/config.json";
-        $this->dnsmasq_config_file = '/usr/local/etc/dnsmasq.d/100-dnsmasq-mgmt.conf';
-        $this->resolver_dir = '/etc/resolver';
+        $this->dnsmasq_config_file = $this->pickPath($paths, 'dnsmasq_config_file');
+        $this->resolver_dir = $this->pickPath($paths, 'resolver_dir');
     }
 
     public function getConfig()
@@ -165,5 +164,14 @@ class ConfigService
         );
         $address_lines = implode("\n", $dnsmasq_addresses);
         file_put_contents($this->dnsmasq_config_file, $address_lines);
+    }
+
+    private function pickPath(array $data, $key)
+    {
+        if (!array_key_exists($key, $data)) {
+            throw new Exception("Config option '{$key}' is missing.");
+        }
+
+        return $data[$key];
     }
 }
