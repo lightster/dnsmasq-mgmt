@@ -10,6 +10,7 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
 {
     private $environment;
 
+    private $setup_commands;
     private $version_commands;
 
     public function __construct(array $environment)
@@ -20,15 +21,20 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
 
     public function setupDnsmasq()
     {
-        $user  = posix_getpwuid(posix_geteuid());
-        $user_name = $user['name'];
-
         $create_dir_commands = '';
         if (!is_dir($this->dnsmasq_dir) || !is_writable($this->dnsmasq_dir)) {
-            $create_dir_commands = <<<CREATE_DIR_CMDS
-sudo mkdir -p {$this->dnsmasq_dir}
-sudo chown {$user_name}:admin {$this->dnsmasq_dir}
-CREATE_DIR_CMDS;
+            $all_commands = $this->getSetupCommands();
+            $sudo_commands = array_map(
+                function ($command) {
+                    if ($command) {
+                        return "sudo {$command}";
+                    }
+
+                    return '';
+                },
+                $all_commands
+            );
+            $create_dir_commands = implode("\n", $sudo_commands);
         }
 
         $shell = <<<SHELL
@@ -87,6 +93,23 @@ SHELL;
         });
 
         return;
+    }
+
+    public function getSetupCommands()
+    {
+        if ($this->setup_commands) {
+            return $this->setup_commands;
+        }
+
+        $user  = posix_getpwuid(posix_geteuid());
+        $user_name = $user['name'];
+
+        $this->setup_commands = [
+            "/bin/mkdir -p {$this->dnsmasq_dir}",
+            "chown {$user_name}:admin {$this->dnsmasq_dir}",
+        ];
+
+        return $this->setup_commands;
     }
 
     public function getClearCacheCommands()
