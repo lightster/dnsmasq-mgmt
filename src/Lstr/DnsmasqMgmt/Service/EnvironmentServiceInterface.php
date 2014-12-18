@@ -6,4 +6,5 @@ interface EnvironmentServiceInterface
 {
     public function clearDnsCache();
     public function getClearCacheCommands();
+    public function setupDnsmasq();
 }

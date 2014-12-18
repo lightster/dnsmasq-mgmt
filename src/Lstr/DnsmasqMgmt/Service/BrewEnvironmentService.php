@@ -15,6 +15,42 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
     public function __construct(array $environment)
     {
         $this->environment = $environment;
+        $this->dnsmasq_dir = '/usr/local/etc/dnsmasq.d';
+    }
+
+    public function setupDnsmasq()
+    {
+        $user  = posix_getpwuid(posix_geteuid());
+        $user_name = $user['name'];
+
+        $create_dir_commands = '';
+        if (true || !is_dir($this->dnsmasq_dir) || !is_writable($this->dnsmasq_dir)) {
+            $create_dir_commands = <<<CREATE_DIR_CMDS
+sudo mkdir -p {$this->dnsmasq_dir}
+sudo chown {$user_name}:admin {$this->dnsmasq_dir}
+CREATE_DIR_CMDS;
+        }
+
+        $shell = <<<SHELL
+set -e
+set -u
+set -v
+
+brew install dnsmasq
+
+{$create_dir_commands}
+SHELL;
+
+        $process = new Process($shell);
+        $process->setTimeout(60);
+        $process->setIdleTimeout(60);
+        $process->mustRun(function ($type, $buffer) {
+            if (Process::ERR === $type) {
+                fwrite(STDERR, $buffer);
+            } else {
+                fwrite(STDOUT, $buffer);
+            }
+        });
     }
 
     public function clearDnsCache()

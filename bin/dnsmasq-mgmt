@@ -11,6 +11,7 @@ use Lstr\DnsmasqMgmt\Command\AddressListCommand;
 use Lstr\DnsmasqMgmt\Command\AddressRemoveCommand;
 use Lstr\DnsmasqMgmt\Command\AddressUpdateCommand;
 use Lstr\DnsmasqMgmt\Command\ClearCacheCommand;
+use Lstr\DnsmasqMgmt\Command\DnsmasqInstallCommand;
 use Lstr\DnsmasqMgmt\Command\ShowCommand;
 use Lstr\DnsmasqMgmt\Command\SudoersSetupCommand;
 
@@ -27,6 +28,7 @@ $console->add(new AddressListCommand());
 $console->add(new AddressRemoveCommand());
 $console->add(new AddressUpdateCommand());
 $console->add(new ClearCacheCommand());
+$console->add(new DnsmasqInstallCommand());
 $console->add(new ShowCommand());
 $console->add(new SudoersSetupCommand());
 

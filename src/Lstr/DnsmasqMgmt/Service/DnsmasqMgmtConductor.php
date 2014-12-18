@@ -48,6 +48,11 @@ class DnsmasqMgmtConductor
         return $this->config_service->getAddresses();
     }
 
+    public function setupDnsmasq()
+    {
+        $this->environment_service->setupDnsmasq();
+    }
+
     public function setupSudoers()
     {
         $this->sudoers_service->setupSudoers();
