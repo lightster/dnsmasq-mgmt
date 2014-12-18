@@ -24,7 +24,7 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
         $user_name = $user['name'];
 
         $create_dir_commands = '';
-        if (true || !is_dir($this->dnsmasq_dir) || !is_writable($this->dnsmasq_dir)) {
+        if (!is_dir($this->dnsmasq_dir) || !is_writable($this->dnsmasq_dir)) {
             $create_dir_commands = <<<CREATE_DIR_CMDS
 sudo mkdir -p {$this->dnsmasq_dir}
 sudo chown {$user_name}:admin {$this->dnsmasq_dir}
