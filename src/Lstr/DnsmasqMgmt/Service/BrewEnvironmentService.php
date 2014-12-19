@@ -60,12 +60,33 @@ SHELL;
             }
         });
 
+        $dnsmasq_config_contents = null;
+
         $has_file_contents = file_exists($this->dnsmasq_config)
             && filesize($this->dnsmasq_config) <= 0;
-        if (!$has_file_contents
-            && !copy($this->dnsmasq_config_template, $this->dnsmasq_config)
-        ) {
-            throw new Exception("Could not create '{$this->dnsmasq_config}'.");
+        if (!$has_file_contents) {
+            $dnsmasq_config_contents = file_get_contents(
+                $this->dnsmasq_config_template
+            );
+        } else {
+            $dnsmasq_config_contents = preg_replace(
+                '/\r?\n?#BEGIN-DNSMASQ-MGMT.*#END-DNSMASQ-MGMT\r?\n?/s',
+                '',
+                file_get_contents($this->dnsmasq_config)
+            );
+        }
+
+        $dnsmasq_config_contents .= <<<TXT
+
+
+#BEGIN-DNSMASQ-MGMT
+conf-dir={$this->dnsmasq_dir}/*.conf
+#END-DNSMASQ-MGMT
+
+TXT;
+
+        if (!file_put_contents($this->dnsmasq_config, $dnsmasq_config_contents)) {
+            throw new Exception("Could not write '{$this->dnsmasq_config}'");
         }
     }
 
