@@ -16,12 +16,14 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
     public function __construct(array $environment)
     {
         $this->environment = $environment;
+        $this->dnsmasq_config_template = '/usr/local/opt/dnsmasq/dnsmasq.conf.example';
+        $this->dnsmasq_config = '/usr/local/etc/dnsmasq.conf';
         $this->dnsmasq_dir = '/usr/local/etc/dnsmasq.d';
     }
 
     public function setupDnsmasq()
     {
-        $create_dir_commands = '';
+        $setup_commands = '';
         if (!is_dir($this->dnsmasq_dir) || !is_writable($this->dnsmasq_dir)) {
             $all_commands = $this->getSetupCommands();
             $sudo_commands = array_map(
@@ -34,7 +36,7 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
                 },
                 $all_commands
             );
-            $create_dir_commands = implode("\n", $sudo_commands);
+            $setup_commands = implode("\n", $sudo_commands);
         }
 
         $shell = <<<SHELL
@@ -44,7 +46,7 @@ set -v
 
 brew install dnsmasq
 
-{$create_dir_commands}
+{$setup_commands}
 SHELL;
 
         $process = new Process($shell);
@@ -57,6 +59,14 @@ SHELL;
                 fwrite(STDOUT, $buffer);
             }
         });
+
+        $has_file_contents = file_exists($this->dnsmasq_config)
+            && filesize($this->dnsmasq_config) <= 0;
+        if (!$has_file_contents
+            && !copy($this->dnsmasq_config_template, $this->dnsmasq_config)
+        ) {
+            throw new Exception("Could not create '{$this->dnsmasq_config}'.");
+        }
     }
 
     public function clearDnsCache()
@@ -105,8 +115,9 @@ SHELL;
         $user_name = $user['name'];
 
         $this->setup_commands = [
-            "/bin/mkdir -p {$this->dnsmasq_dir}",
-            "chown {$user_name}:admin {$this->dnsmasq_dir}",
+            "mkdir -p {$this->dnsmasq_dir}",
+            "touch {$this->dnsmasq_config}",
+            "chown {$user_name}:admin {$this->dnsmasq_config} {$this->dnsmasq_dir}",
         ];
 
         return $this->setup_commands;
