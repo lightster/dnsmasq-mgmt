@@ -23,21 +23,18 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
 
     public function setupDnsmasq()
     {
-        $setup_commands = '';
-        if (!is_dir($this->dnsmasq_dir) || !is_writable($this->dnsmasq_dir)) {
-            $all_commands = $this->getSetupCommands();
-            $sudo_commands = array_map(
-                function ($command) {
-                    if ($command) {
-                        return "sudo {$command}";
-                    }
+        $all_commands = $this->getSetupCommands();
+        $sudo_commands = array_map(
+            function ($command) {
+                if ($command) {
+                    return "sudo {$command}";
+                }
 
-                    return '';
-                },
-                $all_commands
-            );
-            $setup_commands = implode("\n", $sudo_commands);
-        }
+                return '';
+            },
+            $all_commands
+        );
+        $setup_commands = implode("\n", $sudo_commands);
 
         $shell = <<<SHELL
 set -e
@@ -139,6 +136,9 @@ SHELL;
             "mkdir -p {$this->dnsmasq_dir}",
             "touch {$this->dnsmasq_config}",
             "chown {$user_name}:admin {$this->dnsmasq_config} {$this->dnsmasq_dir}",
+            "cp /usr/local/opt/dnsmasq/homebrew.mxcl.dnsmasq.plist /Library/LaunchDaemons",
+            "launchctl unload /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist",
+            "launchctl load /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist",
         ];
 
         return $this->setup_commands;

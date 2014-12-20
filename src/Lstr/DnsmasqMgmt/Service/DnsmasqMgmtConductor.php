@@ -51,6 +51,7 @@ class DnsmasqMgmtConductor
     public function setupDnsmasq()
     {
         $this->environment_service->setupDnsmasq();
+        $this->environment_service->clearDnsCache();
     }
 
     public function setupSudoers()
