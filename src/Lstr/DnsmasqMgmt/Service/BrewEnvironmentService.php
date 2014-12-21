@@ -77,7 +77,7 @@ SHELL;
 
 
 #BEGIN-DNSMASQ-MGMT
-conf-dir={$this->dnsmasq_dir}/*.conf
+conf-dir={$this->dnsmasq_dir}
 #END-DNSMASQ-MGMT
 
 TXT;
