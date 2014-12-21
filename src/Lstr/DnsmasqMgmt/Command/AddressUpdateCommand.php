@@ -42,6 +42,10 @@ class AddressUpdateCommand extends Command implements AppAwareInterface
         $app     = $this->getSilexApplication();
         $service = $app['lstr.dnsmasq'];
 
+        if (!$input->getOption('ip-address')) {
+            throw new Exception("At least one option ('ip-address') should be provided.");
+        }
+
         return $service->updateAddress(
             $input->getArgument('hostname'),
             $input->getOption('ip-address')
