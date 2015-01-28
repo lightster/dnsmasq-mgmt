@@ -153,6 +153,10 @@ class ConfigService
             }
         }
 
+        $config_dir = dirname($this->config_file);
+        if (!is_dir($config_dir) && !mkdir($config_dir, 0755, true)) {
+            throw new Exception("Could not create configuration directory: '{$config_dir}'.");
+        }
         file_put_contents($this->config_file, json_encode($this->config));
         $this->saved_config = $this->config;
 
