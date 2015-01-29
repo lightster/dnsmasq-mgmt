@@ -30,6 +30,11 @@ class ConfigService
         $this->config = array_replace_recursive(
             [
                 'active_workspace' => 'default',
+                'workspaces' => [
+                    'default' => [
+                        'domains' => [],
+                    ],
+                ],
             ],
             $this->config
         );
