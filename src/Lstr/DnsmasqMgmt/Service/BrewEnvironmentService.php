@@ -9,6 +9,9 @@ use Symfony\Component\Process\Process;
 class BrewEnvironmentService implements EnvironmentServiceInterface
 {
     private $environment;
+    private $dnsmasq_config_template;
+    private $dnsmasq_config;
+    private $dnsmasq_dir;
 
     private $setup_commands;
     private $version_commands;
