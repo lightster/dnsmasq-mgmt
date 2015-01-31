@@ -9,6 +9,7 @@ use Symfony\Component\Process\Process;
 class BrewEnvironmentService implements EnvironmentServiceInterface
 {
     private $environment;
+    private $resolver_dir;
     private $dnsmasq_config_template;
     private $dnsmasq_config;
     private $dnsmasq_dir;
@@ -19,6 +20,7 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
     public function __construct(array $environment)
     {
         $this->environment = $environment;
+        $this->resolver_dir = '/etc/resolver';
         $this->dnsmasq_config_template = '/usr/local/opt/dnsmasq/dnsmasq.conf.example';
         $this->dnsmasq_config = '/usr/local/etc/dnsmasq.conf';
         $this->dnsmasq_dir = '/usr/local/etc/dnsmasq.d';
@@ -136,9 +138,10 @@ SHELL;
         $user_name = $user['name'];
 
         $this->setup_commands = [
-            "mkdir -p {$this->dnsmasq_dir}",
+            "mkdir -p {$this->dnsmasq_dir} {$this->resolver_dir}",
             "touch {$this->dnsmasq_config}",
-            "chown {$user_name}:admin {$this->dnsmasq_config} {$this->dnsmasq_dir}",
+            "chown {$user_name}:admin {$this->dnsmasq_config} "
+                . "{$this->dnsmasq_dir} {$this->resolver_dir}",
             "cp /usr/local/opt/dnsmasq/homebrew.mxcl.dnsmasq.plist /Library/LaunchDaemons",
             "launchctl unload /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist",
             "launchctl load /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist",
