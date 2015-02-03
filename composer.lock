@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a8980d42fcd0c0687ffaaa9483a25288",
+    "hash": "d4f359bfc5f76a6f4570b9d26047dfa3",
     "packages": [
         {
             "name": "assetrinc/assetrinc",
@@ -1037,6 +1037,7 @@
     "minimum-stability": "stable",
     "stability-flags": [],
     "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": {
         "php": ">=5.4"
     },

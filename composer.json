@@ -6,6 +6,9 @@
         "management"
     ],
     "homepage": "https://github.com/lightster/dnsmasq-mgmt",
+    "bin": [
+        "bin/dnsmasq-mgmt"
+    ],
     "autoload": {
         "psr-0": {
             "Lstr\\": "src"
