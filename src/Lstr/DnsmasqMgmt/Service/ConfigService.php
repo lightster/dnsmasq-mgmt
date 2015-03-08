@@ -152,7 +152,7 @@ class ConfigService
             if (!array_key_exists($key, $workspace['domains'])
                 && file_exists($resolver_file)
             ) {
-                if (unlink($resolver_file)) {
+                if (!unlink($resolver_file)) {
                     throw new Exception("Could not remove resolver file: '{$resolver_file}'");
                 }
             }
