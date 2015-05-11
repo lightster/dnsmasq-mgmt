@@ -28,13 +28,19 @@ class DnsmasqMgmtServiceProvider implements ServiceProviderInterface
                 throw new Exception("Unknown environment '{$os_name}'");
             }
 
+            $log_service = new LogService();
+
             $env_service_name = $this->environment_services[$os_name];
-            $env_service = new $env_service_name($app['lstr.dnsmasq.environment']);
+            $env_service = new $env_service_name(
+                $app['lstr.dnsmasq.environment'],
+                $log_service
+            );
 
             return new DnsmasqMgmtConductor([
                 'environment_service' => $env_service,
                 'config_service' => new ConfigService($app['config']['paths']),
                 'sudoers_service' => new SudoersService($env_service),
+                'log_service' => $log_service,
             ]);
         });
     }
