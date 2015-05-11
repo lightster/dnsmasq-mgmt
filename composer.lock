@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "975c4fdabeedb330f56b243bc89c8c52",
+    "hash": "5d67b00884ef7a2a37842104ec082c99",
     "packages": [
         {
             "name": "assetrinc/assetrinc",
