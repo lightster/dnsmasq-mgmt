@@ -14,16 +14,20 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
     private $dnsmasq_config;
     private $dnsmasq_dir;
 
+    private $log_service;
+
     private $setup_commands;
     private $version_commands;
 
-    public function __construct(array $environment)
+    public function __construct(array $environment, LogService $log_service)
     {
         $this->environment = $environment;
         $this->resolver_dir = '/etc/resolver';
         $this->dnsmasq_config_template = '/usr/local/opt/dnsmasq/dnsmasq.conf.example';
         $this->dnsmasq_config = '/usr/local/etc/dnsmasq.conf';
         $this->dnsmasq_dir = '/usr/local/etc/dnsmasq.d';
+
+        $this->log_service = $log_service;
     }
 
     public function setupDnsmasq()
@@ -98,7 +102,8 @@ TXT;
         $sudo_commands = array_map(
             function ($command) {
                 if ($command) {
-                    return "sudo {$command}";
+                    $echo_command = escapeshellarg($command);
+                    return "echo 'sudo {$command}'\nsudo {$command}";
                 }
 
                 return '';
@@ -110,18 +115,19 @@ TXT;
         $shell = <<<SHELL
 set -e
 set -u
-set -v
 {$command_string}
 SHELL;
+
+        $log_service = $this->log_service;
 
         $process = new Process($shell);
         $process->setTimeout(60);
         $process->setIdleTimeout(60);
-        $process->mustRun(function ($type, $buffer) {
+        $process->mustRun(function ($type, $buffer) use ($log_service) {
             if (Process::ERR === $type) {
-                fwrite(STDERR, $buffer);
+                $this->log_service->error($buffer);
             } else {
-                fwrite(STDOUT, $buffer);
+                $this->log_service->info($buffer);
             }
         });
 

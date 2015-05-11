@@ -30,6 +30,10 @@ class ClearCacheCommand extends Command implements AppAwareInterface
         $app     = $this->getSilexApplication();
         $service = $app['lstr.dnsmasq'];
 
+        $service->setLoggerIsVerbose(
+            OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()
+        );
+
         return $service->clearDnsCache();
     }
 }
