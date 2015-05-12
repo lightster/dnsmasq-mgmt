@@ -46,6 +46,10 @@ class AddressUpdateCommand extends Command implements AppAwareInterface
             throw new Exception("At least one option ('ip-address') should be provided.");
         }
 
+        $service->setLoggerIsVerbose(
+            OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()
+        );
+
         return $service->updateAddress(
             $input->getArgument('hostname'),
             $input->getOption('ip-address')

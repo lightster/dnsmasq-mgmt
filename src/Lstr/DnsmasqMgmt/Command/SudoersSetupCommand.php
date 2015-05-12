@@ -36,6 +36,10 @@ class SudoersSetupCommand extends Command implements AppAwareInterface
         $app     = $this->getSilexApplication();
         $service = $app['lstr.dnsmasq'];
 
+        $service->setLoggerIsVerbose(
+            OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()
+        );
+
         $service->setupSudoers();
     }
 }

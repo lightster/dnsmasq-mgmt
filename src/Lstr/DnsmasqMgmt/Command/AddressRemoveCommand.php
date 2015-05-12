@@ -36,6 +36,10 @@ class AddressRemoveCommand extends Command implements AppAwareInterface
         $app     = $this->getSilexApplication();
         $service = $app['lstr.dnsmasq'];
 
+        $service->setLoggerIsVerbose(
+            OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()
+        );
+
         return $service->removeAddress(
             $input->getArgument('hostname')
         );

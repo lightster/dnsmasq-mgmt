@@ -41,6 +41,10 @@ class AddressAddCommand extends Command implements AppAwareInterface
         $app     = $this->getSilexApplication();
         $service = $app['lstr.dnsmasq'];
 
+        $service->setLoggerIsVerbose(
+            OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()
+        );
+
         return $service->addAddress(
             $input->getArgument('hostname'),
             $input->getArgument('ip-address')

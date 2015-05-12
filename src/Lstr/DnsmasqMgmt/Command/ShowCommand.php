@@ -30,6 +30,10 @@ class ShowCommand extends Command implements AppAwareInterface
         $app     = $this->getSilexApplication();
         $service = $app['lstr.dnsmasq'];
 
+        $service->setLoggerIsVerbose(
+            OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()
+        );
+
         return var_dump($service->getConfig());
     }
 }

@@ -31,6 +31,10 @@ class AddressListCommand extends Command implements AppAwareInterface
         $app     = $this->getSilexApplication();
         $service = $app['lstr.dnsmasq'];
 
+        $service->setLoggerIsVerbose(
+            OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()
+        );
+
         $addresses = $service->getAddresses();
         $hostnames = array_keys($addresses);
         $max_hostname_length = array_reduce(
