@@ -36,7 +36,8 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
         $sudo_commands = array_map(
             function ($command) {
                 if ($command) {
-                    return "sudo {$command}";
+                    $echo_command = escapeshellarg($command);
+                    return "echo 'sudo {$command}'\nsudo {$command}";
                 }
 
                 return '';
@@ -48,21 +49,22 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
         $shell = <<<SHELL
 set -e
 set -u
-set -v
 
 brew install dnsmasq
 
 {$setup_commands}
 SHELL;
 
+        $log_service = $this->log_service;
+
         $process = new Process($shell);
         $process->setTimeout(60);
         $process->setIdleTimeout(60);
-        $process->mustRun(function ($type, $buffer) {
+        $process->mustRun(function ($type, $buffer) use ($log_service) {
             if (Process::ERR === $type) {
-                fwrite(STDERR, $buffer);
+                $this->log_service->error($buffer);
             } else {
-                fwrite(STDOUT, $buffer);
+                $this->log_service->info($buffer);
             }
         });
 
