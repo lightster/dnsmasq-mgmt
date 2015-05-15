@@ -9,10 +9,12 @@ use Symfony\Component\Process\Process;
 class SudoersService
 {
     private $env_service;
+    private $log_service;
 
-    public function __construct(EnvironmentServiceInterface $env_service)
+    public function __construct(EnvironmentServiceInterface $env_service, LogService $log_service)
     {
         $this->env_service = $env_service;
+        $this->log_service = $log_service;
     }
 
     public function setupSudoers()
@@ -60,23 +62,25 @@ TXT;
         $shell = <<<SHELL
 set -e
 set -u
-set -v
 
 # check syntax of file
 visudo -c -s -f /etc/sudoers.dnsmasq-mgmt
 
 # moving into place
+echo "moving /etc/sudoers.dnsmasq-mgmt into place"
 mv /etc/sudoers.dnsmasq-mgmt /etc/sudoers
 SHELL;
+
+        $log_service = $this->log_service;
 
         $process = new Process($shell);
         $process->setTimeout(60);
         $process->setIdleTimeout(60);
-        $process->mustRun(function ($type, $buffer) {
+        $process->mustRun(function ($type, $buffer) use ($log_service) {
             if (Process::ERR === $type) {
-                fwrite(STDERR, $buffer);
+                $this->log_service->error($buffer);
             } else {
-                fwrite(STDOUT, $buffer);
+                $this->log_service->info($buffer);
             }
         });
 
