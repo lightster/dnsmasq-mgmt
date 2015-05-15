@@ -10,7 +10,7 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
 {
     private $environment;
     private $resolver_dir;
-    private $dnsmasq_config_template;
+    private $dnsmasq_template;
     private $dnsmasq_config;
     private $dnsmasq_dir;
 
@@ -23,7 +23,7 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
     {
         $this->environment = $environment;
         $this->resolver_dir = '/etc/resolver';
-        $this->dnsmasq_config_template = '/usr/local/opt/dnsmasq/dnsmasq.conf.example';
+        $this->dnsmasq_template = '/usr/local/opt/dnsmasq/dnsmasq.conf.example';
         $this->dnsmasq_config = '/usr/local/etc/dnsmasq.conf';
         $this->dnsmasq_dir = '/usr/local/etc/dnsmasq.d';
 
@@ -68,23 +68,23 @@ SHELL;
             }
         });
 
-        $dnsmasq_config_contents = null;
+        $config_contents = null;
 
         $has_file_contents = file_exists($this->dnsmasq_config)
             && filesize($this->dnsmasq_config) <= 0;
         if (!$has_file_contents) {
-            $dnsmasq_config_contents = file_get_contents(
-                $this->dnsmasq_config_template
+            $config_contents = file_get_contents(
+                $this->dnsmasq_template
             );
         } else {
-            $dnsmasq_config_contents = preg_replace(
+            $config_contents = preg_replace(
                 '/\r?\n?#BEGIN-DNSMASQ-MGMT.*#END-DNSMASQ-MGMT\r?\n?/s',
                 '',
                 file_get_contents($this->dnsmasq_config)
             );
         }
 
-        $dnsmasq_config_contents .= <<<TXT
+        $config_contents .= <<<TXT
 
 
 #BEGIN-DNSMASQ-MGMT
@@ -93,7 +93,7 @@ conf-dir={$this->dnsmasq_dir}
 
 TXT;
 
-        if (!file_put_contents($this->dnsmasq_config, $dnsmasq_config_contents)) {
+        if (!file_put_contents($this->dnsmasq_config, $config_contents)) {
             throw new Exception("Could not write '{$this->dnsmasq_config}'");
         }
     }
