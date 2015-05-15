@@ -29,11 +29,12 @@ class DnsmasqMgmtServiceProvider implements ServiceProviderInterface
             }
 
             $log_service = new LogService();
+            $process_service = new ProcessService($log_service);
 
             $env_service_name = $this->environment_services[$os_name];
             $env_service = new $env_service_name(
                 $app['lstr.dnsmasq.environment'],
-                $log_service
+                $process_service
             );
 
             return new DnsmasqMgmtConductor([

@@ -4,8 +4,6 @@ namespace Lstr\DnsmasqMgmt\Service;
 
 use Exception;
 
-use Symfony\Component\Process\Process;
-
 class BrewEnvironmentService implements EnvironmentServiceInterface
 {
     private $environment;
@@ -14,12 +12,12 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
     private $dnsmasq_config;
     private $dnsmasq_dir;
 
-    private $log_service;
+    private $process_service;
 
     private $setup_commands;
     private $version_commands;
 
-    public function __construct(array $environment, LogService $log_service)
+    public function __construct(array $environment, ProcessService $process_service)
     {
         $this->environment = $environment;
         $this->resolver_dir = '/etc/resolver';
@@ -27,46 +25,18 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
         $this->dnsmasq_config = '/usr/local/etc/dnsmasq.conf';
         $this->dnsmasq_dir = '/usr/local/etc/dnsmasq.d';
 
-        $this->log_service = $log_service;
+        $this->process_service = $process_service;
     }
 
     public function setupDnsmasq()
     {
-        $all_commands = $this->getSetupCommands();
-        $sudo_commands = array_map(
-            function ($command) {
-                if ($command) {
-                    $echo_command = escapeshellarg($command);
-                    return "echo 'sudo {$command}'\nsudo {$command}";
-                }
+        $setup_commands = $this->getSetupCommands();
+        $sudo_commands = $this->process_service->prependSudo($setup_commands);
+        $all_commands = [
+            'brew install dnsmasq',
+        ] + $sudo_commands;
 
-                return '';
-            },
-            $all_commands
-        );
-        $setup_commands = implode("\n", $sudo_commands);
-
-        $shell = <<<SHELL
-set -e
-set -u
-
-brew install dnsmasq
-
-{$setup_commands}
-SHELL;
-
-        $log_service = $this->log_service;
-
-        $process = new Process($shell);
-        $process->setTimeout(60);
-        $process->setIdleTimeout(60);
-        $process->mustRun(function ($type, $buffer) use ($log_service) {
-            if (Process::ERR === $type) {
-                $this->log_service->error($buffer);
-            } else {
-                $this->log_service->info($buffer);
-            }
-        });
+        $this->process_service->mustRun($all_commands);
 
         $config_contents = null;
 
@@ -101,39 +71,9 @@ TXT;
     public function clearDnsCache()
     {
         $all_commands = $this->getClearCacheCommands();
-        $sudo_commands = array_map(
-            function ($command) {
-                if ($command) {
-                    $echo_command = escapeshellarg($command);
-                    return "echo 'sudo {$command}'\nsudo {$command}";
-                }
+        $sudo_commands = $this->process_service->prependSudo($all_commands);
 
-                return '';
-            },
-            $all_commands
-        );
-        $command_string = implode("\n", $sudo_commands);
-
-        $shell = <<<SHELL
-set -e
-set -u
-{$command_string}
-SHELL;
-
-        $log_service = $this->log_service;
-
-        $process = new Process($shell);
-        $process->setTimeout(60);
-        $process->setIdleTimeout(60);
-        $process->mustRun(function ($type, $buffer) use ($log_service) {
-            if (Process::ERR === $type) {
-                $this->log_service->error($buffer);
-            } else {
-                $this->log_service->info($buffer);
-            }
-        });
-
-        return;
+        $this->process_service->mustRun($sudo_commands);
     }
 
     public function getSetupCommands()
