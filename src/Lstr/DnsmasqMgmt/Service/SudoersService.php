@@ -30,25 +30,12 @@ class SudoersService
             $sudoers
         );
 
-        $all_commands = $this->env_service->getClearCacheCommands();
-        $prepared_commands = [];
-        foreach ($all_commands as $key => $command) {
-            if (!$command) {
-                continue;
-            }
-
-            $alias = "DNSMASQ_MGMT_{$key}";
-            $prepared_commands[$alias] = "Cmnd_Alias {$alias} = {$command}";
-        }
-
-        $command_string = implode("\n", $prepared_commands);
-        $alias_list = implode(', ', array_keys($prepared_commands));
+        $content = $this->generateDnsMasqSudoersContent();
 
         $sudoers .= <<<TXT
 
 #BEGIN-DNSMASQ-MGMT
-{$command_string}
-%admin ALL=(root) NOPASSWD: {$alias_list}
+{$content}
 #END-DNSMASQ-MGMT
 
 TXT;
@@ -67,5 +54,29 @@ TXT;
         $this->process_service->mustRun($commands);
 
         return;
+    }
+
+    private function generateDnsMasqSudoersContent()
+    {
+        $all_commands = $this->env_service->getClearCacheCommands();
+        $prepared_commands = [];
+        foreach ($all_commands as $key => $command) {
+            if (!$command) {
+                continue;
+            }
+
+            $alias = "DNSMASQ_MGMT_{$key}";
+            $prepared_commands[$alias] = "Cmnd_Alias {$alias} = {$command}";
+        }
+
+        $command_string = implode("\n", $prepared_commands);
+        $alias_list = implode(', ', array_keys($prepared_commands));
+
+        $content = <<<TXT
+{$command_string}
+%admin ALL=(root) NOPASSWD: {$alias_list}
+TXT;
+
+        return $content;
     }
 }
