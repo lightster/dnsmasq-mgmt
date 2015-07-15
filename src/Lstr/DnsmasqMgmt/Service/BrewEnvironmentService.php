@@ -114,15 +114,14 @@ TXT;
 
     private function getVersionCommand($darwin_version)
     {
-        list($major_version) = explode('.', $darwin_version);
-
-        $version_commands = $this->getVersionCommands();
-
-        if (!isset($version_commands[$major_version])) {
-            throw new Exception("Unknown Darwin version: {$major_version} ({$darwin_version}).");
+        $version_commands = [];
+        foreach ($this->getVersionCommands() as $bin => $command) {
+            if (file_exists($bin)) {
+                $version_commands[] = $command;
+            }
         }
 
-        return $version_commands[$major_version];
+        return $version_commands;
     }
 
     private function getVersionCommands()
@@ -131,32 +130,11 @@ TXT;
             return $this->version_commands;
         }
 
-        // darwin 14 = OS X 10.10
-        $this->version_commands['14'] = [
-            '/usr/sbin/discoveryutil udnsflushcaches',
+        $this->version_commands = [
+            '/usr/sbin/discoveryutil' => '/usr/sbin/discoveryutil udnsflushcaches',
+            '/usr/bin/dscacheutil'    => '/usr/bin/dscacheutil -flushcache',
+            '/usr/bin/killall'        => '/usr/bin/killall -HUP mDNSResponder',
         ];
-
-        // darwin 13 = OS X 10.9
-        $this->version_commands['13'] = [
-            '/usr/bin/dscacheutil -flushcache',
-            '/usr/bin/killall -HUP mDNSResponder',
-        ];
-
-        // darwin 12 = OS X 10.8
-        $this->version_commands['12'] = [
-            '/usr/bin/killall -HUP mDNSResponder',
-        ];
-
-        // darwin 11 = OS X 10.7
-        $this->version_commands['11'] = $this->version_commands['12'];
-
-        // darwin 10 = OS X 10.6
-        $this->version_commands['10'] = [
-            '/usr/bin/dscacheutil -flushcache',
-        ];
-
-        // darwin 9 = OS X 10.5
-        $this->version_commands['9'] = $this->version_commands['10'];
 
         return $this->version_commands;
     }
