@@ -14,6 +14,7 @@ use Lstr\DnsmasqMgmt\Command\ClearCacheCommand;
 use Lstr\DnsmasqMgmt\Command\DnsmasqInstallCommand;
 use Lstr\DnsmasqMgmt\Command\ShowCommand;
 use Lstr\DnsmasqMgmt\Command\SudoersSetupCommand;
+use Lstr\DnsmasqMgmt\Command\WorkspaceListCommand;
 
 use Lstr\Silex\App\AppAwareInterface;
 use Silex\Application;
@@ -31,6 +32,7 @@ $console->add(new ClearCacheCommand());
 $console->add(new DnsmasqInstallCommand());
 $console->add(new ShowCommand());
 $console->add(new SudoersSetupCommand());
+$console->add(new WorkspaceListCommand());
 
 foreach ($console->all() as $command) {
     if ($command instanceof AppAwareInterface) {

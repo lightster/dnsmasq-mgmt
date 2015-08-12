@@ -27,6 +27,11 @@ class DnsmasqMgmtConductor
         return $this->config_service->getConfig();
     }
 
+    public function getWorkspaces()
+    {
+        return $this->config_service->getWorkspaces();
+    }
+
     public function addAddress($hostname, $address)
     {
         $this->config_service->addAddress($hostname, $address);

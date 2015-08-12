@@ -49,6 +49,20 @@ class ConfigService
         return $this->config['active_workspace'];
     }
 
+    public function getWorkspaces()
+    {
+        $this->getConfig();
+
+        $workspaces = [];
+        foreach ($this->config['workspaces'] as $name => $workspace) {
+            $workspaces[$name] = [
+                'name' => $name,
+            ];
+        }
+
+        return $workspaces;
+    }
+
     public function addAddress($hostname, $ip_address)
     {
         $this->getConfig();
