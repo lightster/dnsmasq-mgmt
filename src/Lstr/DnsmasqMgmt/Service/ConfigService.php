@@ -63,6 +63,19 @@ class ConfigService
         return $workspaces;
     }
 
+    public function setWorkspace($workspace)
+    {
+        $this->getConfig();
+
+        $this->config['active_workspace'] = $workspace;
+
+        if (!array_key_exists($workspace, $this->config['workspaces'])) {
+            $this->config['workspaces'][$workspace] = ['domains' => []];
+        }
+
+        $this->writeConfig();
+    }
+
     public function addAddress($hostname, $ip_address)
     {
         $this->getConfig();
