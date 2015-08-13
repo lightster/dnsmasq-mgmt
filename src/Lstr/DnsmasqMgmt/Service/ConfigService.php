@@ -67,7 +67,7 @@ class ConfigService
     {
         $this->getConfig();
 
-        $workspace = &$this->config['workspaces']['default'];
+        $workspace = &$this->config['workspaces'][$this->config['active_workspace']];
 
         if (isset($workspace['domains'][$hostname])) {
             throw new Exception("Address is '{$hostname}' already configured.");
@@ -85,7 +85,7 @@ class ConfigService
     {
         $this->getConfig();
 
-        $workspace = &$this->config['workspaces']['default'];
+        $workspace = &$this->config['workspaces'][$this->config['active_workspace']];
 
         if (!isset($workspace['domains'][$hostname])) {
             throw new Exception("Address is '{$hostname}' not configured.");
@@ -100,7 +100,7 @@ class ConfigService
     {
         $this->getConfig();
 
-        $workspace = &$this->config['workspaces']['default'];
+        $workspace = &$this->config['workspaces'][$this->config['active_workspace']];
 
         if (!isset($workspace['domains'][$hostname])) {
             throw new Exception("Address is '{$hostname}' not configured.");
@@ -117,7 +117,7 @@ class ConfigService
     {
         $this->getConfig();
 
-        $workspace = &$this->config['workspaces']['default'];
+        $workspace = &$this->config['workspaces'][$this->config['active_workspace']];
 
         return $workspace['domains'];
     }
@@ -150,8 +150,8 @@ class ConfigService
 
     private function writeConfig()
     {
-        $workspace = &$this->config['workspaces']['default'];
-        $saved_workspace = &$this->saved_config['workspaces']['default'];
+        $workspace = &$this->config['workspaces'][$this->config['active_workspace']];
+        $saved_workspace = &$this->saved_config['workspaces'][$this->saved_config['active_workspace']];
 
         foreach ($workspace['domains'] as $domain) {
             $resolver_file = "{$this->resolver_dir}/{$domain['hostname']}";
