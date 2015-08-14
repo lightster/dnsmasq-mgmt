@@ -46,6 +46,8 @@ class ConfigService
 
     public function getActiveWorkspace()
     {
+        $this->getConfig();
+
         return $this->config['active_workspace'];
     }
 
