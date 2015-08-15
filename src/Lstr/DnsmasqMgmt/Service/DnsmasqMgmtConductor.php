@@ -38,6 +38,11 @@ class DnsmasqMgmtConductor
         $this->environment_service->clearDnsCache();
     }
 
+    public function getActiveWorkspaceName()
+    {
+        return $this->config_service->getActiveWorkspace();
+    }
+
     public function addAddress($hostname, $address)
     {
         $this->config_service->addAddress($hostname, $address);

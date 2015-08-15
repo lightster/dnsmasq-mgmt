@@ -35,11 +35,14 @@ class WorkspaceListCommand extends Command implements AppAwareInterface
             OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()
         );
 
+        $active_workspace = $service->getActiveWorkspaceName();
         $workspaces = $service->getWorkspaces();
+        ksort($workspaces);
 
         foreach ($workspaces as $workspace_name => $workspace) {
             $output->writeln(sprintf(
-                "%s",
+                "%1s %s",
+                ($workspace_name == $active_workspace ? '*' : ''),
                 $workspace_name
             ));
         }
