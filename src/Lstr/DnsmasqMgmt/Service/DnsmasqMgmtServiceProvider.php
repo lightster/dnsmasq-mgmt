@@ -2,6 +2,7 @@
 
 namespace Lstr\DnsmasqMgmt\Service;
 
+use Exception;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
