@@ -32,9 +32,7 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
     {
         $setup_commands = $this->getSetupCommands();
         $sudo_commands = $this->process_service->prependSudo($setup_commands);
-        $all_commands = [
-            'brew install dnsmasq',
-        ] + $sudo_commands;
+        $all_commands = array_merge(['brew install dnsmasq'], $sudo_commands);
 
         $this->process_service->mustRun($all_commands);
 
