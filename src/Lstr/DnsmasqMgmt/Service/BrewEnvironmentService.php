@@ -88,9 +88,7 @@ TXT;
             "touch {$this->dnsmasq_config}",
             "chown {$user_name}:admin {$this->dnsmasq_config} "
                 . "{$this->dnsmasq_dir} {$this->resolver_dir}",
-            "cp /usr/local/opt/dnsmasq/homebrew.mxcl.dnsmasq.plist /Library/LaunchDaemons",
-            "launchctl unload /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist",
-            "launchctl load /Library/LaunchDaemons/homebrew.mxcl.dnsmasq.plist",
+            "brew services start dnsmasq",
         ];
 
         return $this->setup_commands;
