@@ -21,7 +21,7 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
     {
         $this->environment = $environment;
         $this->resolver_dir = '/etc/resolver';
-        $this->dnsmasq_template = '/usr/local/opt/dnsmasq/dnsmasq.conf.example';
+        $this->dnsmasq_template = '/usr/local/etc/dnsmasq.conf.default';
         $this->dnsmasq_config = '/usr/local/etc/dnsmasq.conf';
         $this->dnsmasq_dir = '/usr/local/etc/dnsmasq.d';
 
