@@ -8,7 +8,6 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
 {
     private $environment;
     private $resolver_dir;
-    private $dnsmasq_template;
     private $dnsmasq_config;
     private $dnsmasq_dir;
 
@@ -21,7 +20,6 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
     {
         $this->environment = $environment;
         $this->resolver_dir = '/etc/resolver';
-        $this->dnsmasq_template = '/usr/local/opt/dnsmasq/dnsmasq.conf.example';
         $this->dnsmasq_config = '/usr/local/etc/dnsmasq.conf';
         $this->dnsmasq_dir = '/usr/local/etc/dnsmasq.d';
 
@@ -36,21 +34,11 @@ class BrewEnvironmentService implements EnvironmentServiceInterface
 
         $this->process_service->mustRun($all_commands);
 
-        $config_contents = null;
-
-        $has_file_contents = file_exists($this->dnsmasq_config)
-            && filesize($this->dnsmasq_config) <= 0;
-        if (!$has_file_contents) {
-            $config_contents = file_get_contents(
-                $this->dnsmasq_template
-            );
-        } else {
-            $config_contents = preg_replace(
-                '/\r?\n?#BEGIN-DNSMASQ-MGMT.*#END-DNSMASQ-MGMT\r?\n?/s',
-                '',
-                file_get_contents($this->dnsmasq_config)
-            );
-        }
+        $config_contents = preg_replace(
+            '/\r?\n?#BEGIN-DNSMASQ-MGMT.*#END-DNSMASQ-MGMT\r?\n?/s',
+            '',
+            file_get_contents($this->dnsmasq_config)
+        );
 
         $config_contents .= <<<TXT
 
