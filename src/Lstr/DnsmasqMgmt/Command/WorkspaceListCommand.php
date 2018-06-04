@@ -21,7 +21,6 @@ class WorkspaceListCommand extends Command implements AppAwareInterface
     {
         $this
             ->setName('workspace:list')
-            ->setAliases(['list-workspaces'])
             ->setDescription('List workspaces')
         ;
     }

@@ -21,7 +21,6 @@ class AddressListCommand extends Command implements AppAwareInterface
     {
         $this
             ->setName('address:list')
-            ->setAliases(['list-addresses'])
             ->setDescription('List addresses')
         ;
     }

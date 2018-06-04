@@ -21,7 +21,6 @@ class AddressUpdateCommand extends Command implements AppAwareInterface
     {
         $this
             ->setName('address:update')
-            ->setAliases(['update-address'])
             ->setDescription('Remove an address')
             ->addArgument(
                 'hostname',

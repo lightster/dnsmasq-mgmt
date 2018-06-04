@@ -21,7 +21,6 @@ class AddressRemoveCommand extends Command implements AppAwareInterface
     {
         $this
             ->setName('address:remove')
-            ->setAliases(['remove-address'])
             ->setDescription('Remove an address')
             ->addArgument(
                 'hostname',
