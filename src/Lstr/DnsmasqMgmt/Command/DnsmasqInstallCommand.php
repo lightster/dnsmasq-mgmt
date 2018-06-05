@@ -21,7 +21,6 @@ class DnsmasqInstallCommand extends Command implements AppAwareInterface
     {
         $this
             ->setName('dnsmasq:install')
-            ->setAliases(['install-dnsmasq'])
             ->setDescription('Setup dnsmasq')
         ;
     }

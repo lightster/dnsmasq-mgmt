@@ -21,7 +21,6 @@ class SudoersSetupCommand extends Command implements AppAwareInterface
     {
         $this
             ->setName('sudoers:install')
-            ->setAliases(['install-sudoers'])
             ->setDescription('Setup sudoers file to allow for passwordless dnsmasq management')
         ;
     }

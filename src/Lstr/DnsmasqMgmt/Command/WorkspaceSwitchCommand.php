@@ -21,7 +21,6 @@ class WorkspaceSwitchCommand extends Command implements AppAwareInterface
     {
         $this
             ->setName('workspace:switch')
-            ->setAliases(['switch-workspaces'])
             ->setDescription('Switch workspaces')
             ->addArgument(
                 'workspace',

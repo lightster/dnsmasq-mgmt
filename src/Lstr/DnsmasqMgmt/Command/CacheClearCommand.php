@@ -13,14 +13,14 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ClearCacheCommand extends Command implements AppAwareInterface
+class CacheClearCommand extends Command implements AppAwareInterface
 {
     use AppAwareTrait;
 
     protected function configure()
     {
         $this
-            ->setName('clear-cache')
+            ->setName('cache:clear')
             ->setDescription('Clear the operating system\'s DNS cache')
         ;
     }

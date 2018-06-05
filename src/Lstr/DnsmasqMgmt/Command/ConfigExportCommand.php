@@ -13,14 +13,14 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ShowCommand extends Command implements AppAwareInterface
+class ConfigExportCommand extends Command implements AppAwareInterface
 {
     use AppAwareTrait;
 
     protected function configure()
     {
         $this
-            ->setName('show')
+            ->setName('config:export')
             ->setDescription('Show the current config options')
         ;
     }
@@ -34,6 +34,6 @@ class ShowCommand extends Command implements AppAwareInterface
             OutputInterface::VERBOSITY_VERBOSE <= $output->getVerbosity()
         );
 
-        return var_dump($service->getConfig());
+        echo json_encode($service->getConfig(), JSON_PRETTY_PRINT);
     }
 }

@@ -21,7 +21,6 @@ class AddressAddCommand extends Command implements AppAwareInterface
     {
         $this
             ->setName('address:add')
-            ->setAliases(['add-address'])
             ->setDescription('Add a new address')
             ->addArgument(
                 'hostname',
