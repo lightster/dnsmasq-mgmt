@@ -21,7 +21,7 @@ class ConfigExportCommand extends Command implements AppAwareInterface
     {
         $this
             ->setName('config:export')
-            ->setDescription('Show the current config options')
+            ->setDescription('Output the current config as JSON')
         ;
     }
 

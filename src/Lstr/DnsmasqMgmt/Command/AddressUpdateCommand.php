@@ -21,7 +21,7 @@ class AddressUpdateCommand extends Command implements AppAwareInterface
     {
         $this
             ->setName('address:update')
-            ->setDescription('Remove an address')
+            ->setDescription('Update the IP that an address points to')
             ->addArgument(
                 'hostname',
                 InputArgument::REQUIRED,
