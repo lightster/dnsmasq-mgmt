@@ -6,17 +6,6 @@
 
 $app = require_once __DIR__ . '/../bootstrap.php';
 
-use Lstr\DnsmasqMgmt\Command\AddressAddCommand;
-use Lstr\DnsmasqMgmt\Command\AddressListCommand;
-use Lstr\DnsmasqMgmt\Command\AddressRemoveCommand;
-use Lstr\DnsmasqMgmt\Command\AddressUpdateCommand;
-use Lstr\DnsmasqMgmt\Command\CacheClearCommand;
-use Lstr\DnsmasqMgmt\Command\ConfigExportCommand;
-use Lstr\DnsmasqMgmt\Command\DnsmasqInstallCommand;
-use Lstr\DnsmasqMgmt\Command\SudoersSetupCommand;
-use Lstr\DnsmasqMgmt\Command\WorkspaceListCommand;
-use Lstr\DnsmasqMgmt\Command\WorkspaceSwitchCommand;
-
 use Lstr\Silex\App\AppAwareInterface;
 use Silex\Application;
 use Symfony\Component\Console\Application as ConsoleApp;
@@ -25,16 +14,16 @@ $console = new ConsoleApp(
     'dnsmasq management tools'
 );
 
-$console->add(new AddressAddCommand());
-$console->add(new AddressListCommand());
-$console->add(new AddressRemoveCommand());
-$console->add(new AddressUpdateCommand());
-$console->add(new CacheClearCommand());
-$console->add(new ConfigExportCommand());
-$console->add(new DnsmasqInstallCommand());
-$console->add(new SudoersSetupCommand());
-$console->add(new WorkspaceListCommand());
-$console->add(new WorkspaceSwitchCommand());
+$console->add(new \Lstr\DnsmasqMgmt\Command\AddressAddCommand());
+$console->add(new \Lstr\DnsmasqMgmt\Command\AddressListCommand());
+$console->add(new \Lstr\DnsmasqMgmt\Command\AddressRemoveCommand());
+$console->add(new \Lstr\DnsmasqMgmt\Command\AddressUpdateCommand());
+$console->add(new \Lstr\DnsmasqMgmt\Command\CacheClearCommand());
+$console->add(new \Lstr\DnsmasqMgmt\Command\ConfigExportCommand());
+$console->add(new \Lstr\DnsmasqMgmt\Command\DnsmasqInstallCommand());
+$console->add(new \Lstr\DnsmasqMgmt\Command\SudoersSetupCommand());
+$console->add(new \Lstr\DnsmasqMgmt\Command\WorkspaceListCommand());
+$console->add(new \Lstr\DnsmasqMgmt\Command\WorkspaceSwitchCommand());
 
 foreach ($console->all() as $command) {
     if ($command instanceof AppAwareInterface) {
