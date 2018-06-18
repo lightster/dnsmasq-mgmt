@@ -40,6 +40,22 @@ _dnsmasq_mgmt_completions()
 
     return
   fi
+
+  case "${COMP_WORDS[1]}" in
+    "address:remove"|"address:update")
+      local addresses=($(dnsmasq-mgmt address:list | awk '{print $1}'))
+      IFS=$'\n'
+
+      local filtered=($(compgen -W "${addresses[*]}" -- "${COMP_WORDS[${COMP_CWORD}]}"))
+
+      if [ "${#filtered[@]}" == "1" ]; then
+        COMPREPLY=("${filtered[0]} ")
+      else
+        COMPREPLY=("${filtered[@]}")
+      fi
+      return
+      ;;
+  esac
 }
 
 complete -o bashdefault -o default -o nospace -F _dnsmasq_mgmt_completions dnsmasq-mgmt
