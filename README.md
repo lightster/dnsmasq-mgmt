@@ -57,3 +57,10 @@ dnsmasq-mgmt offers a few other commands.  You can get a full list of commands b
 ```
 dnsmasq-mgmt list
 ```
+
+### Install bash completion
+
+If you are using bash, you can install bash completion for dnsmasq-mgmt by adding the following to your `~/.bashrc` (or `~/.bash_profile`):
+```bash
+source  ~/.composer/vendor/lightster/dnsmasq-mgmt/bin/dnsmasq-mgmt-completion.bash
+```
