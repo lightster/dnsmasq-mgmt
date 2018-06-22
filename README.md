@@ -58,9 +58,16 @@ dnsmasq-mgmt offers a few other commands.  You can get a full list of commands b
 dnsmasq-mgmt list
 ```
 
-### Install bash completion
+### Install shell completion
 
-If you are using bash, you can install bash completion for dnsmasq-mgmt by adding the following to your `~/.bashrc` (or `~/.bash_profile`):
+If you are using bash or zsh, you can install shell completion for dnsmasq-mgmt.
+
+For Bash, add the following to your `~/.bashrc` (or `~/.bash_profile`):
 ```bash
 source  ~/.composer/vendor/lightster/dnsmasq-mgmt/bin/dnsmasq-mgmt-completion.bash
+```
+
+For zsh, add the following to your `~/.zshrc`:
+```zsh
+source  ~/.composer/vendor/lightster/dnsmasq-mgmt/bin/dnsmasq-mgmt-completion.zsh
 ```
