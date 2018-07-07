@@ -45,6 +45,8 @@ class AddressListCommand extends Command implements AppAwareInterface
         );
         $hostname_length = $max_hostname_length + 2;
 
+        ksort($addresses);
+
         foreach ($addresses as $hostname => $address) {
             $output->writeln(sprintf(
                 "%-{$hostname_length}s %s",
